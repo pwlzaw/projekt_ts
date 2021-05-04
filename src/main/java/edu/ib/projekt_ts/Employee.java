@@ -8,6 +8,7 @@ public class Employee {
     private int available;
     private String login;
     private String passwd;
+    private String type ;
 
     public int getId() {
         return id;
@@ -57,20 +58,32 @@ public class Employee {
         this.passwd = passwd;
     }
 
-    public Employee(String employee_name, int used, int available, String login, String passwd) {
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Employee(String employee_name, int used, int available, String login, String passwd, String type) {
         this.employee_name = employee_name;
         this.used = used;
         this.available = available;
         this.login = login;
         this.passwd = passwd;
+        this.type = type;
     }
 
-    public Employee(int id, String employee_name, int used, int available, String login, String passwd) {
+    public Employee(int id, String employee_name, int used, int available, String login, String passwd, String type) {
         this.id = id;
         this.employee_name = employee_name;
         this.used = used;
         this.available = available;
         this.login = login;
         this.passwd = passwd;
+        this.type = type;
     }
+
 }
+
