@@ -3,32 +3,11 @@ package edu.ib.projekt_ts;
 public class Employee {
 
     private int id;
-    private String name;
+    private String employee_name;
     private int used;
     private int available;
-
-    public Employee(int id, String name, int used, int available) {
-        this.id = id;
-        this.name = name;
-        this.used = used;
-        this.available = available;
-    }
-
-    public Employee(String name, int used, int available) {
-        this.name = name;
-        this.used = used;
-        this.available = available;
-    }
-
-    @Override
-    public String toString() {
-        return "Employee{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", used=" + used +
-                ", available=" + available +
-                '}';
-    }
+    private String login;
+    private String passwd;
 
     public int getId() {
         return id;
@@ -38,12 +17,12 @@ public class Employee {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getEmployee_name() {
+        return employee_name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEmployee_name(String employee_name) {
+        this.employee_name = employee_name;
     }
 
     public int getUsed() {
@@ -60,5 +39,38 @@ public class Employee {
 
     public void setAvailable(int available) {
         this.available = available;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPasswd() {
+        return passwd;
+    }
+
+    public void setPasswd(String passwd) {
+        this.passwd = passwd;
+    }
+
+    public Employee(String employee_name, int used, int available, String login, String passwd) {
+        this.employee_name = employee_name;
+        this.used = used;
+        this.available = available;
+        this.login = login;
+        this.passwd = passwd;
+    }
+
+    public Employee(int id, String employee_name, int used, int available, String login, String passwd) {
+        this.id = id;
+        this.employee_name = employee_name;
+        this.used = used;
+        this.available = available;
+        this.login = login;
+        this.passwd = passwd;
     }
 }
