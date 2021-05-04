@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.time.LocalDate;
 import java.util.List;
 
 @WebServlet("/AdminServlet")
@@ -86,8 +87,12 @@ public class AdminServlet extends HttpServlet {
                         listVacations(request, response);
                         break;
                         
-                    case "UPDATE":
-                        updateVacations(request, response);
+                    case "ACCEPT":
+                        acceptVacations(request, response);
+                        break;
+
+                    case "DENY":
+                        denyVacations(request, response);
                         break;
 
                     case "DELETE":
@@ -104,13 +109,30 @@ public class AdminServlet extends HttpServlet {
 
         }
 
-    private void deleteVacations(HttpServletRequest request, HttpServletResponse response) {
+    private void denyVacations(HttpServletRequest request, HttpServletResponse response) {
     }
 
-    private void updateVacations(HttpServletRequest request, HttpServletResponse response) {
+    private void deleteVacations(HttpServletRequest request, HttpServletResponse response) {
+
+    }
+
+    private void acceptVacations(HttpServletRequest request, HttpServletResponse response) {
+        int id = Integer.parseInt(request.getParameter("id_employee"));
+        LocalDate start = LocalDate.parse(request.getParameter("start_date"));
+        LocalDate end = LocalDate.parse(request.getParameter("end_date"));
+        LocalDate state = LocalDate.parse(request.getParameter("state"));
+
+        Vacation vacation = new Vacation(id, start, end, "accepted");
+
+        // uaktualnienie danych w BD
+        dbUtil.updateVacation(vacation);
+
+        // wyslanie danych do strony z lista urlopów
+        listVacations(request, response);
     }
 
     private void listVacations(HttpServletRequest request, HttpServletResponse response) {
+
     }
 
 

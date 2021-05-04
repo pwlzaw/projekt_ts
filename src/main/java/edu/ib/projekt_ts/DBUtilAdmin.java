@@ -25,4 +25,10 @@ public class DBUtilAdmin extends DBUtil{
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public void deleteVacation(String id) {
+    }
+
+    public void updateVacation(Vacation vacation) {
+    }
 }
