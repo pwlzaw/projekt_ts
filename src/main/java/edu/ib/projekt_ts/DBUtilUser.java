@@ -17,4 +17,12 @@ public class DBUtilUser extends DBUtil{
     List<Employee> getEmployee() throws Exception {
         return null;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
