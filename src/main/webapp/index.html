@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div class="jumbotron">
+    <div class="container">
+        <h1>Login</h1>
+
+
+        <form action="AdminServlet" method="post">
+            <div class="form-group">
+                <label for="Login">Login</label>
+                <input type="text" class="form-control" name="loginInput" placeholder="Wprowadź login">
+                <small id="emailHelp" class="form-text text-muted">Login powinien mieć długość 4 znaków.</small>
+            </div>
+            <div class="form-group">
+                <label for="Password">Hasło</label>
+                <input type="password" class="form-control" name="passwordInput" placeholder="Hasło">
+            </div>
+            <button type="submit" class="btn btn-primary">Dalej</button>
+        </form>
+
+    </div>
+</div>
+
+</body>
+</html>
