@@ -10,7 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.time.LocalDate;
 import java.util.List;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @WebServlet("/UserServlet")
 public class UserServlet extends HttpServlet {
@@ -63,9 +66,121 @@ public class UserServlet extends HttpServlet {
             dispatcher.forward(request, response);
         } else {
 
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/index.html");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/user_login.html");
             dispatcher.include(request, response);
         }
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws
+            ServletException, IOException {
+
+
+        try {
+
+            // odczytanie zadania
+            String command = request.getParameter("command");
+
+            if (command == null)
+                command = "LIST";
+
+            switch (command) {
+
+                case "LIST":
+                    listVacations(request, response);
+                    break;
+
+                case "ADD":
+                    addVacations(request, response);
+                    break;
+
+                case "CHANGE":
+                    changeVacations(request, response);
+                    break;
+
+                case "DELETE":
+                    deleteVacations(request, response);
+                    break;
+
+                default:
+                    listVacations(request, response);
+            }
+
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
+
+    }
+
+    private void deleteVacations(HttpServletRequest request, HttpServletResponse response) {
+        int id = Integer.parseInt(request.getParameter("id_employee"));
+        LocalDate start = LocalDate.parse(request.getParameter("start_date"));
+        LocalDate end = LocalDate.parse(request.getParameter("end_date"));
+        LocalDate state = LocalDate.parse(request.getParameter("state"));
+
+        Vacation vacation = new Vacation(id, start, end, "waiting deletion");
+
+        // uaktualnienie danych w BD
+        dbUtil.updateVacation(vacation);
+
+        // wyslanie danych do strony z lista urlopów
+        listVacations(request, response);
+    }
+
+    private void changeVacations(HttpServletRequest request, HttpServletResponse response) {
+        int id = Integer.parseInt(request.getParameter("id_employee"));
+        LocalDate start = LocalDate.parse(request.getParameter("start_date"));
+        LocalDate end = LocalDate.parse(request.getParameter("end_date"));
+        LocalDate state = LocalDate.parse(request.getParameter("state"));
+
+            Vacation vacation = new Vacation(id, start, end, "waiting change acceptation");
+
+            // uaktualnienie danych w BD
+            dbUtil.updateVacation(vacation);
+
+
+        // wyslanie danych do strony z lista urlopów
+        listVacations(request, response);
+
+    }
+
+    private void addVacations(HttpServletRequest request, HttpServletResponse response) {
+        int id = Integer.parseInt(request.getParameter("id_employee"));
+        LocalDate start = LocalDate.parse(request.getParameter("start_date"));
+        LocalDate end = LocalDate.parse(request.getParameter("end_date"));
+        LocalDate state = LocalDate.parse(request.getParameter("state"));
+
+        int available = Integer.parseInt(request.getParameter("available"));
+
+        if (available >= DAYS.between(start,end)) {
+
+            Vacation vacation = new Vacation(id, start, end, "waiting acceptation");
+
+            // uaktualnienie danych w BD
+            dbUtil.addVacation(vacation);
+
+            // wyslanie danych do strony z lista urlopów
+            listVacations(request, response);
+
+        }else {
+                request.setAttribute("FAIL_RESPONSE","Not enough available vacation days");
+            }
+
+    }
+
+    private void listVacations(HttpServletRequest request, HttpServletResponse response) {
+        int id = Integer.parseInt(request.getParameter("id_employee"));
+        LocalDate start = LocalDate.parse(request.getParameter("start_date"));
+        LocalDate end = LocalDate.parse(request.getParameter("end_date"));
+        LocalDate state = LocalDate.parse(request.getParameter("state"));
+
+        Vacation vacation = new Vacation(id, start, end, "accepted");
+
+        // uaktualnienie danych w BD
+        dbUtil.updateVacation(vacation);
+
+        // wyslanie danych do strony z lista urlopów
+        listVacations(request, response);
+
     }
 
     private boolean validate(String name, String pass) {
