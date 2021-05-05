@@ -8,8 +8,6 @@ import java.util.List;
 public abstract class DBUtil {
 
 
-    abstract List<Employee> getEmployee() throws Exception;
-
     protected static void close(Connection conn, Statement statement, ResultSet resultSet) {
 
         try {

@@ -48,18 +48,18 @@ public class AdminServlet extends HttpServlet {
         if (validate(name, password)) {
             RequestDispatcher dispatcher = request.getRequestDispatcher("/admin_view.jsp");
 
-            List<Employee> employeeList = null;
+            List<Vacation> vacationList = null;
 
             try {
 
-                employeeList = dbUtil.getEmployee();
+                vacationList = dbUtil.getVacations();
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             // dodanie listy do obiektu zadania
-            request.setAttribute("EMPLOYEES_LIST", employeeList);
+            request.setAttribute("VACATIONS_LIST", vacationList);
 
             dispatcher.forward(request, response);
         } else {
@@ -95,9 +95,6 @@ public class AdminServlet extends HttpServlet {
                         denyVacations(request, response);
                         break;
 
-                    case "DELETE":
-                        deleteVacations(request, response);
-                        break;
 
                     default:
                         listVacations(request, response);
@@ -109,20 +106,14 @@ public class AdminServlet extends HttpServlet {
 
         }
 
-    private void denyVacations(HttpServletRequest request, HttpServletResponse response) {
-    }
-
-    private void deleteVacations(HttpServletRequest request, HttpServletResponse response) {
-
-    }
-
-    private void acceptVacations(HttpServletRequest request, HttpServletResponse response) {
-        int id = Integer.parseInt(request.getParameter("id_employee"));
+    private void denyVacations(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        int id = Integer.parseInt(request.getParameter("id"));
+        int idEmployee = Integer.parseInt(request.getParameter("id_employee"));
         LocalDate start = LocalDate.parse(request.getParameter("start_date"));
         LocalDate end = LocalDate.parse(request.getParameter("end_date"));
         LocalDate state = LocalDate.parse(request.getParameter("state"));
 
-        Vacation vacation = new Vacation(id, start, end, "accepted");
+        Vacation vacation = new Vacation(id,idEmployee, start, end, "denied");
 
         // uaktualnienie danych w BD
         dbUtil.updateVacation(vacation);
@@ -131,8 +122,38 @@ public class AdminServlet extends HttpServlet {
         listVacations(request, response);
     }
 
-    private void listVacations(HttpServletRequest request, HttpServletResponse response) {
 
+    private void acceptVacations(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        int id = Integer.parseInt(request.getParameter("id"));
+        int idEmployee = Integer.parseInt(request.getParameter("id_employee"));
+        LocalDate start = LocalDate.parse(request.getParameter("start_date"));
+        LocalDate end = LocalDate.parse(request.getParameter("end_date"));
+        LocalDate state = LocalDate.parse(request.getParameter("state"));
+
+        if (state.equals("waiting deletion")) {
+            dbUtil.deleteVacation(id);
+        } else {
+            Vacation vacation = new Vacation(id,idEmployee, start, end, "accepted");
+
+            // uaktualnienie danych w BD
+            dbUtil.updateVacation(vacation);
+        }
+        // wyslanie danych do strony z lista urlopów
+        listVacations(request, response);
+    }
+
+
+    private void listVacations(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        List<Vacation> resortList = dbUtil.getVacations();
+
+        // dodanie listy do obiektu zadania
+        request.setAttribute("VACATIONS_LIST", resortList);
+
+        // dodanie request dispatcher
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/admin_view.jsp");
+
+        // przekazanie do JSP
+        dispatcher.forward(request, response);
     }
 
 
