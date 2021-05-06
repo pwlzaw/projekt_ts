@@ -1,5 +1,7 @@
 package edu.ib.projekt_ts;
 
+import jdk.vm.ci.meta.Local;
+
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -289,12 +291,15 @@ public class DBUtilUser extends DBUtil {
         Connection conn = null;
         PreparedStatement statement = null;
         PreparedStatement statement2 = null;
+        PreparedStatement statement3 = null;
+        ResultSet resultSet = null;
+        int difference= 0;
 
         try {
             int length = (int) DAYS.between(vacation.getStart_date(), vacation.getEnd_date())+1;
 
 
-            if (vacation.getState().equals("waiting deletion") || (getUserAvailableDays(vacation.getId_employee()) >= length)) {
+            if ((vacation.getState().equals("waiting deletion") || (getUserAvailableDays(vacation.getId_employee()) >= length))&&length>0) {
 
 
 
@@ -311,8 +316,9 @@ public class DBUtilUser extends DBUtil {
                 statement.execute();
 
                 if (!vacation.getState().equals("waiting deletion")) {
+
+
                     String sql2 = "insert into vacations_to_update(id,id_employee,start_date,end_date,state) values (?,?,?,?,?)";
-                    setUserDays(vacation.getId_employee(), getUserAvailableDays(vacation.getId_employee()) - length, getUserUsedDays(vacation.getId_employee()) + length);
 
                     statement2 = conn.prepareStatement(sql2);
                     statement2.setString(1, String.valueOf(vacation.getId()));
@@ -321,6 +327,31 @@ public class DBUtilUser extends DBUtil {
                     statement2.setString(4, String.valueOf((vacation.getEnd_date())));
                     statement2.setString(5, "New Value");
                     statement2.execute();
+
+
+                    String sql3 = "select * from vacations where id=?";
+
+                    statement3 = conn.prepareStatement(sql3);
+                    statement3.setString(1, String.valueOf(vacation.getId()));
+                    statement3.execute();
+
+
+                    resultSet = statement.executeQuery(sql);
+
+                    // przetworzenie wyniku zapytania
+                    while (resultSet.next()) {
+                        // pobranie danych z rzedu
+                        LocalDate start_date = LocalDate.parse(resultSet.getString("start_date"));
+                        LocalDate end_date = LocalDate.parse(resultSet.getString("end_date"));
+                        difference = (int)DAYS.between(start_date,end_date);
+
+                    }
+
+                    setUserDays(vacation.getId_employee(), getUserAvailableDays(vacation.getId_employee()) +difference, getUserUsedDays(vacation.getId_employee()) - difference);
+
+
+                    setUserDays(vacation.getId_employee(), getUserAvailableDays(vacation.getId_employee()) - length, getUserUsedDays(vacation.getId_employee()) + length);
+
                 }else{
                     setUserDays(vacation.getId_employee(), getUserAvailableDays(vacation.getId_employee()) + length, getUserUsedDays(vacation.getId_employee()) - length);
                 }
@@ -339,7 +370,7 @@ public class DBUtilUser extends DBUtil {
         int length = (int) DAYS.between(vacation.getStart_date(), vacation.getEnd_date())+1;
 
 
-        if (getUserAvailableDays(vacation.getId_employee()) >= length) {
+        if ((getUserAvailableDays(vacation.getId_employee()) >= length)&&length>0) {
             setUserDays(vacation.getId_employee(), getUserAvailableDays(vacation.getId_employee()) - length, getUserUsedDays(vacation.getId_employee()) + length);
 
 
