@@ -22,7 +22,7 @@ public class DBUtilUser extends DBUtil{
         Connection conn = null;
         Statement statement = null;
         ResultSet resultSet = null;
-        String result;
+        String result="";
 
         try {
 
@@ -36,13 +36,14 @@ public class DBUtilUser extends DBUtil{
             // wykonanie zapytania SQL
             resultSet = statement.executeQuery(sql);
 
+            while (resultSet.next()) {
                 // pobranie danych
                 String name = resultSet.getString("employee_name");
                 int used = Integer.parseInt(resultSet.getString("used"));
                 int available = Integer.parseInt(resultSet.getString("available"));
 
-
-                result = "User: "+name + "Vacation days used: " + used +"Vacation days available: "+ available;
+                result = "User: " + name + "Vacation days used: " + used + "Vacation days available: " + available;
+            }
 
         } finally {
 

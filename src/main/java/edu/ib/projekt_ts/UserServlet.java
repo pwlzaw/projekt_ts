@@ -43,7 +43,6 @@ public class UserServlet extends HttpServlet {
 
         String name = request.getParameter("loginInput");
         String password = request.getParameter("passwordInput");
-        int id = Integer.parseInt(request.getParameter("id_employee"));
 
         dbUtil.setName(name);
         dbUtil.setPassword(password);

@@ -4,6 +4,9 @@
 <html>
 <head>
     <title>Oferta</title>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
 </head>
 
 <body>
@@ -11,6 +14,10 @@
 
 
 <h1>Twoje wakacje</h1>
+
+<h2>
+    ${USER_INFO}
+</h2>
 
 
 <table class="table table-striped">
@@ -38,19 +45,9 @@
     </c:forEach>
     </tbody>
 </table>
-
-<div class="row form-group"></div>
-<div class="row form-group"></div>
-<div class="row form-group"></div>
-
-<div class="row">
-    <div class="container-fluid">
-
-        <div class="col-sm-9">
-            <a href="index.html" class="btn btn-lg btn-primary" role="button" aria-disabled="true">Wróć do strony głównej</a>
-        </div>
-    </div>
-</div>
+id pracownika wynosi:${VACATION_LIST[0].id_employee}
+<br>
+<a href="add_vacation.jsp?id_employee=${VACATION_LIST[0].id_employee}">Dodaj urlop</a>
 
 
 </body>
