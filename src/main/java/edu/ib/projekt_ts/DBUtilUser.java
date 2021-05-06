@@ -294,9 +294,8 @@ public class DBUtilUser extends DBUtil {
             int length = (int) DAYS.between(vacation.getStart_date(), vacation.getEnd_date())+1;
 
 
-            if (vacation.getState().equals("waiting deletion") || (getUserAvailableDays(vacation.getId_employee()) > length)) {
+            if (vacation.getState().equals("waiting deletion") || (getUserAvailableDays(vacation.getId_employee()) >= length)) {
 
-                setUserDays(vacation.getId_employee(), getUserAvailableDays(vacation.getId_employee()) - length, getUserUsedDays(vacation.getId_employee()) + length);
 
 
                 conn = DriverManager.getConnection(URL, name, password);
@@ -313,6 +312,7 @@ public class DBUtilUser extends DBUtil {
 
                 if (!vacation.getState().equals("waiting deletion")) {
                     String sql2 = "insert into vacations_to_update(id,id_employee,start_date,end_date,state) values (?,?,?,?,?)";
+                    setUserDays(vacation.getId_employee(), getUserAvailableDays(vacation.getId_employee()) - length, getUserUsedDays(vacation.getId_employee()) + length);
 
                     statement2 = conn.prepareStatement(sql2);
                     statement2.setString(1, String.valueOf(vacation.getId()));
@@ -321,6 +321,8 @@ public class DBUtilUser extends DBUtil {
                     statement2.setString(4, String.valueOf((vacation.getEnd_date())));
                     statement2.setString(5, "New Value");
                     statement2.execute();
+                }else{
+                    setUserDays(vacation.getId_employee(), getUserAvailableDays(vacation.getId_employee()) + length, getUserUsedDays(vacation.getId_employee()) - length);
                 }
             }
         } finally {
@@ -337,7 +339,7 @@ public class DBUtilUser extends DBUtil {
         int length = (int) DAYS.between(vacation.getStart_date(), vacation.getEnd_date())+1;
 
 
-        if (getUserAvailableDays(vacation.getId_employee()) > length) {
+        if (getUserAvailableDays(vacation.getId_employee()) >= length) {
             setUserDays(vacation.getId_employee(), getUserAvailableDays(vacation.getId_employee()) - length, getUserUsedDays(vacation.getId_employee()) + length);
 
 
