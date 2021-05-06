@@ -15,11 +15,12 @@
 <h1>Twoje wakacje</h1>
 
 
-<table>
+<table class="table">
 
     <thead>
     <tr>
         <th scope="col">#</th>
+        <th scope="col">Id pracownika</th>
         <th scope="col">Data początku</th>
         <th scope="col">Data końca</th>
         <th scope="col">Status</th>
@@ -29,7 +30,7 @@
 
     <c:forEach var="tmpVacation" items="${VACATIONS_LIST}">
 
-        <c:if test="${tmpVacation.state!='New Value'}">
+        <c:if test="${tmpVacation.state!='waiting change acceptation'}">
             <c:url var="acceptLink" value="AdminServlet">
                 <c:param name="command" value="ACCEPT"></c:param>
                 <c:param name="id" value="${tmpVacation.id}"></c:param>
@@ -52,11 +53,12 @@
 
         <tr>
             <th scope="row">${tmpVacation.id}</th>
+            <td>${tmpVacation.id_employee}</td>
             <td>${tmpVacation.start_date}</td>
             <td>${tmpVacation.end_date}</td>
             <td>${tmpVacation.state}</td>
 
-            <c:if test="${tmpVacation.state!='New Value'}">
+            <c:if test="${tmpVacation.state!='waiting change acceptation'}">
             <td><a href="${acceptLink}">
                 <button type="button">Zaakceptuj</button>
             </a>
@@ -71,14 +73,9 @@
     </tbody>
 </table>
 
-<div>
-    <div >
 
-        <div>
-            <a href="index.html"  role="button" aria-disabled="true">Wróć do strony głównej</a>
-        </div>
-    </div>
-</div>
+            <a href="index.html"  role="button">Wróć do strony głównej</a>
+
 
 
 </body>
