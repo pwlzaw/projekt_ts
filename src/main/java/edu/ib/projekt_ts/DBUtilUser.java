@@ -1,5 +1,6 @@
 package edu.ib.projekt_ts;
 
+import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,6 +17,38 @@ public class DBUtilUser extends DBUtil{
     }
 
 
+    int getID(String login) {
+
+        int id = 0;
+        Connection conn = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+
+            // polaczenie z BD
+            conn = DriverManager.getConnection(URL, name, password);
+
+            System.out.println("test");
+            // zapytanie SELECT
+            String sql = "SELECT id FROM employees where login = \"" + login + "\"";
+            statement = conn.createStatement();
+
+            // wykonanie zapytania SQL
+            resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()) {
+                id = Integer.parseInt(resultSet.getString("id"));
+            }
+
+        }catch (SQLException e){
+
+        }finally {
+            // zamkniecie obiektow JDBC
+            close(conn, statement, resultSet);
+        }
+        return id;
+    }
 
     String getEmployee(int id) throws Exception {
 
@@ -30,7 +63,7 @@ public class DBUtilUser extends DBUtil{
             conn = DriverManager.getConnection(URL, name, password);
 
             // zapytanie SELECT
-            String sql = "SELECT employee_name, used, available FROM employees where id_employee = "+id;
+            String sql = "SELECT employee_name, used, available FROM employees where id = "+id;
             statement = conn.createStatement();
 
             // wykonanie zapytania SQL
@@ -63,10 +96,10 @@ public class DBUtilUser extends DBUtil{
         this.password = password;
     }
 
-    List<Vacation> getVacations(int idEmployee) throws Exception{
+    Vacation getVacation(int inputId) throws Exception{
 
-        List<Vacation> vacations = new ArrayList<>();
 
+        Vacation vacation = null;
         Connection conn = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -77,7 +110,7 @@ public class DBUtilUser extends DBUtil{
             conn = DriverManager.getConnection(URL, name, password);
 
             // zapytanie SELECT
-            String sql = "SELECT * FROM vacations where id_employee = "+idEmployee;
+            String sql = "SELECT * FROM vacations where id = "+inputId;
             statement = conn.createStatement();
 
             // wykonanie zapytania SQL
@@ -88,24 +121,64 @@ public class DBUtilUser extends DBUtil{
 
                 // pobranie danych z rzedu
                 int id = resultSet.getInt("id");
+                int idEmployee = resultSet.getInt("id_employee");
                 LocalDate start = LocalDate.parse(resultSet.getString("start_date"));
                 LocalDate end = LocalDate.parse(resultSet.getString("end_date"));
                 String state = resultSet.getString("state");
 
 
                 // dodanie do listy nowego obiektu
-                vacations.add(new Vacation(id,idEmployee, start,end,state));
+                vacation = new Vacation(id,idEmployee, start,end,state);
+
 
             }
+            return vacation;
 
         } finally {
 
             // zamkniecie obiektow JDBC
             close(conn, statement, resultSet);
         }
+    }
 
+    List<Vacation> getVacations(int inputId) throws Exception{
 
-        return vacations;
+        List<Vacation> vacations = new ArrayList<>();
+        Connection conn = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+
+            // polaczenie z BD
+            conn = DriverManager.getConnection(URL, name, password);
+
+            // zapytanie SELECT
+            String sql = "SELECT * FROM vacations where id_employee = "+inputId;
+            statement = conn.createStatement();
+
+            // wykonanie zapytania SQL
+            resultSet = statement.executeQuery(sql);
+
+            // przetworzenie wyniku zapytania
+            while (resultSet.next()) {
+                // pobranie danych z rzedu
+                int id = resultSet.getInt("id");
+                int idEmployee = resultSet.getInt("id_employee");
+                LocalDate start = LocalDate.parse(resultSet.getString("start_date"));
+                LocalDate end = LocalDate.parse(resultSet.getString("end_date"));
+                String state = resultSet.getString("state");
+
+                // dodanie do listy nowego obiektu
+                vacations.add(new Vacation(id,idEmployee, start,end,state));
+            }
+            return vacations;
+
+        } finally {
+
+            // zamkniecie obiektow JDBC
+            close(conn, statement, resultSet);
+        }
     }
 
     public void updateVacation(Vacation vacation) throws Exception{
@@ -129,13 +202,14 @@ public class DBUtilUser extends DBUtil{
             // wykonanie zapytania
             statement.execute();
 
-            String sql2 = "insert into vacations_to_update(id_employee,start_date,end_date,state) values (?,?,?,?)";
+            String sql2 = "insert into vacations_to_update(id,id_employee,start_date,end_date,state) values (?,?,?,?,?)";
 
             statement2 = conn.prepareStatement(sql2);
-            statement2.setString(1, String.valueOf(vacation.getId_employee()));
-            statement2.setString(2, String.valueOf((vacation.getStart_date())));
-            statement2.setString(3, String.valueOf((vacation.getEnd_date())));
-            statement2.setString(4, (vacation.getState()));
+            statement2.setString(1, String.valueOf(vacation.getId()));
+            statement2.setString(2, String.valueOf(vacation.getId_employee()));
+            statement2.setString(3, String.valueOf((vacation.getStart_date())));
+            statement2.setString(4, String.valueOf((vacation.getEnd_date())));
+            statement2.setString(5, "New Value");
 
 
             statement2.execute();
@@ -150,6 +224,33 @@ public class DBUtilUser extends DBUtil{
 
     }
 
-    public void addVacation(Vacation vacation) {
+    public void addVacation(Vacation vacation) throws Exception{
+
+        Connection conn = null;
+        PreparedStatement statement = null;
+
+        try {
+            // polaczenie z BD
+            conn = DriverManager.getConnection(URL, name, password);
+
+            // zapytanie INSERT i ustawienie jego parametrow
+            String sql = "INSERT INTO vacations(id_employee,start_date,end_date,state) " +
+                    "VALUES(?,?,?,?)";
+
+            statement = conn.prepareStatement(sql);
+            statement.setInt(1, vacation.getId_employee());
+            statement.setString(2, vacation.getStart_date().toString());
+            statement.setString(3, vacation.getEnd_date().toString());
+            statement.setString(4, "waiting acceptation");
+
+            // wykonanie zapytania
+            statement.execute();
+
+
+        } finally {
+
+            close(conn, statement, null);
+
+        }
     }
 }

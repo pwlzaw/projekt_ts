@@ -1,5 +1,8 @@
 package edu.ib.projekt_ts;
 
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DBUtilAdmin extends DBUtil{
@@ -10,6 +13,37 @@ public class DBUtilAdmin extends DBUtil{
 
     public DBUtilAdmin(String URL) {
         this.URL = URL;
+    }
+
+
+    boolean hasPermision(String login) throws Exception{
+        Connection conn = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        String type ="";
+        try {
+
+            // polaczenie z BD
+            conn = DriverManager.getConnection(URL, name, password);
+
+            // zapytanie SELECT
+            String sql = "SELECT user_type FROM employees where login = '"+login+"'";
+            statement = conn.createStatement();
+
+            // wykonanie zapytania SQL
+            resultSet = statement.executeQuery(sql);
+
+            // przetworzenie wyniku zapytania
+
+            while (resultSet.next()) {
+                type = resultSet.getString("user_type");
+            }
+            return type.equals("admin");
+        } finally {
+            // zamkniecie obiektow JDBC
+            close(conn, statement, resultSet);
+        }
     }
 
 
@@ -27,8 +61,8 @@ public class DBUtilAdmin extends DBUtil{
             // polaczenie z BD
             conn = DriverManager.getConnection(URL, name, password);
 
-            // zapytanie SELECT
-            String sql = "SELECT * FROM vacations_to_update";
+            // waiting acceptation   waiting change acceptation waiting deletion
+            String sql = "SELECT * FROM vacations where state= 'waiting acceptation' or state='waiting change acceptation' or state= 'waiting deletion'";
             statement = conn.createStatement();
 
             // wykonanie zapytania SQL
@@ -49,6 +83,34 @@ public class DBUtilAdmin extends DBUtil{
                 vacations.add(new Vacation(id,idEmployee, start, end, state));
 
             }
+            sql = "SELECT * FROM vacations_to_update";
+            statement = conn.createStatement();
+
+            // wykonanie zapytania SQL
+            resultSet = statement.executeQuery(sql);
+
+            // przetworzenie wyniku zapytania
+            while (resultSet.next()) {
+
+                // pobranie danych z rzedu
+                int id = Integer.parseInt(resultSet.getString("id"));
+                int idEmployee = Integer.parseInt(resultSet.getString("id_employee"));
+                LocalDate start = LocalDate.parse(resultSet.getString("start_date"));
+                LocalDate end = LocalDate.parse(resultSet.getString("end_date"));
+                String state = resultSet.getString("state");
+
+
+                // dodanie do listy nowego obiektu
+                vacations.add(new Vacation(id,idEmployee, start, end, state));
+
+            }
+            vacations.sort((v1,v2) -> {
+                if(v1.getId()>v2.getId())
+                    return 1;
+                else
+                    return -1;
+
+            });
 
         } finally {
 
@@ -77,8 +139,7 @@ public class DBUtilAdmin extends DBUtil{
             conn = DriverManager.getConnection(URL, name, password);
 
             // zapytanie UPDATE
-            String sql = "delete from vacations =" +
-                    "WHERE id ="+id;
+            String sql = "delete from vacations WHERE id ="+id;
 
             statement = conn.prepareStatement(sql);
 
@@ -106,7 +167,6 @@ public class DBUtilAdmin extends DBUtil{
         PreparedStatement statement2 = null;
 
         try {
-
             // polaczenie z BD
             conn = DriverManager.getConnection(URL, name, password);
 

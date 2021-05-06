@@ -4,10 +4,19 @@ import java.time.LocalDate;
 
 public class Vacation {
 
+    private int id;
     private int id_employee;
     private LocalDate start_date;
     private LocalDate end_date;
     private String state;
+
+    public Vacation(int id, int id_employee, LocalDate start_date, LocalDate end_date, String state) {
+        this.id = id;
+        this.id_employee = id_employee;
+        this.start_date = start_date;
+        this.end_date = end_date;
+        this.state = state;
+    }
 
     public Vacation(int id_employee, LocalDate start_date, LocalDate end_date, String state) {
         this.id_employee = id_employee;

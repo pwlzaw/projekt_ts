@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -47,15 +48,17 @@ public class UserServlet extends HttpServlet {
         dbUtil.setName(name);
         dbUtil.setPassword(password);
 
+
         if (validate(name, password)) {
+
+
             RequestDispatcher dispatcher = request.getRequestDispatcher("/user_view.jsp");
 
             List<Vacation> vacationList = null;
 
             try {
-
+                int id = dbUtil.getID(name);
                 vacationList = dbUtil.getVacations(id);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -89,6 +92,10 @@ public class UserServlet extends HttpServlet {
                     listVacations(request, response);
                     break;
 
+                case "LOAD":
+                    loadVacation(request, response);
+                    break;
+
                 case "ADD":
                     addVacations(request, response);
                     break;
@@ -111,14 +118,19 @@ public class UserServlet extends HttpServlet {
 
     }
 
-    private void deleteVacations(HttpServletRequest request, HttpServletResponse response) throws Exception{
-        int id = Integer.parseInt(request.getParameter("id"));
-        int idEmployee = Integer.parseInt(request.getParameter("id_employee"));
-        LocalDate start = LocalDate.parse(request.getParameter("start_date"));
-        LocalDate end = LocalDate.parse(request.getParameter("end_date"));
-        LocalDate state = LocalDate.parse(request.getParameter("state"));
+    private void loadVacation(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        int id = Integer.parseInt(request.getParameter("vacationID"));
+        Vacation vacation = dbUtil.getVacation(id);
+        request.setAttribute("VACATION", vacation);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/edit_vacation.jsp");
+        dispatcher.forward(request, response);
+    }
 
-        Vacation vacation = new Vacation(id, start, end, "waiting deletion");
+    private void deleteVacations(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        int id = Integer.parseInt(request.getParameter("vacationID"));
+        Vacation tempVacation = dbUtil.getVacation(id);
+
+        Vacation vacation = new Vacation(tempVacation.getId(), tempVacation.getId_employee(), tempVacation.getStart_date(), tempVacation.getEnd_date(), "waiting deletion");
 
         // uaktualnienie danych w BD
         dbUtil.updateVacation(vacation);
@@ -127,17 +139,16 @@ public class UserServlet extends HttpServlet {
         listVacations(request, response);
     }
 
-    private void changeVacations(HttpServletRequest request, HttpServletResponse response) throws Exception{
+    private void changeVacations(HttpServletRequest request, HttpServletResponse response) throws Exception {
         int id = Integer.parseInt(request.getParameter("id"));
         int idEmployee = Integer.parseInt(request.getParameter("id_employee"));
         LocalDate start = LocalDate.parse(request.getParameter("start_date"));
         LocalDate end = LocalDate.parse(request.getParameter("end_date"));
-        LocalDate state = LocalDate.parse(request.getParameter("state"));
 
-            Vacation vacation = new Vacation(id, start, end, "waiting change acceptation");
+        Vacation vacation = new Vacation(id, idEmployee, start, end, "waiting change acceptation");
 
-            // uaktualnienie danych w BD
-            dbUtil.updateVacation(vacation);
+        // uaktualnienie danych w BD
+        dbUtil.updateVacation(vacation);
 
 
         // wyslanie danych do strony z lista urlopów
@@ -145,42 +156,31 @@ public class UserServlet extends HttpServlet {
 
     }
 
-    private void addVacations(HttpServletRequest request, HttpServletResponse response) throws Exception{
+    private void addVacations(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         int idEmployee = Integer.parseInt(request.getParameter("id_employee"));
         LocalDate start = LocalDate.parse(request.getParameter("start_date"));
         LocalDate end = LocalDate.parse(request.getParameter("end_date"));
-        LocalDate state = LocalDate.parse(request.getParameter("state"));
+        Vacation vacation = new Vacation(idEmployee, start, end, "waiting acceptation");
 
-        int available = Integer.parseInt(request.getParameter("available"));
+        // uaktualnienie danych w BD
+        dbUtil.addVacation(vacation);
 
-        if (available >= DAYS.between(start,end)) {
-
-            Vacation vacation = new Vacation(id, start, end, "waiting acceptation");
-
-            // uaktualnienie danych w BD
-            dbUtil.addVacation(vacation);
-
-            // wyslanie danych do strony z lista urlopów
-            listVacations(request, response);
-
-        }else {
-                request.setAttribute("FAIL_RESPONSE","Not enough available vacation days");
-            }
-
+        // wyslanie danych do strony z lista urlopów
+        listVacations(request, response);
     }
 
     private void listVacations(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        int id = Integer.parseInt(request.getParameter("id_employee"));
-        String user = dbUtil.getEmployee(id);
-        List<Vacation> resortList = dbUtil.getVacations(id);
+        int idEmployee = Integer.parseInt(request.getParameter("id_employee"));
+        String user = dbUtil.getEmployee(idEmployee);
+        List<Vacation> resortList = dbUtil.getVacations(idEmployee);
 
         // dodanie listy do obiektu zadania
         request.setAttribute("USER_INFO", user);
-        request.setAttribute("VACATIONS_LIST", resortList);
+        request.setAttribute("VACATION_LIST", resortList);
 
         // dodanie request dispatcher
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/admin_view.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/user_view.jsp");
 
         // przekazanie do JSP
         dispatcher.forward(request, response);

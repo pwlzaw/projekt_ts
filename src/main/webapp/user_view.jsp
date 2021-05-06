@@ -11,16 +11,13 @@
 
 <body>
 
-
-
 <h1>Twoje wakacje</h1>
 
 <h2>
     ${USER_INFO}
 </h2>
 
-
-<table class="table table-striped">
+<table>
 
     <thead>
     <tr>
@@ -32,15 +29,33 @@
     </thead>
     <tbody>
 
-    <c:forEach var="tmpVacation" items="${VACATIONS_LIST}">
+    <c:forEach var="tmpVacation" items="${VACATION_LIST}">
+
+        <c:url var="updateLink" value="UserServlet">
+            <c:param name="command" value="LOAD"></c:param>
+            <c:param name="vacationID" value="${tmpVacation.id}"></c:param>
+        </c:url>
+
+        <c:url var="deleteLink" value="UserServlet">
+            <c:param name="command" value="DELETE"></c:param>
+            <c:param name="vacationID" value="${tmpVacation.id}"></c:param>
+            <c:param name="id_employee" value="${tmpVacation.id_employee}"></c:param>
+        </c:url>
+
 
         <tr>
             <th scope="row">${tmpVacation.id}</th>
-            <td>${tmpVacation.model}</td>
-            <td>${tmpVacation.make}</td>
-            <td>${tmpVacation.price}</td>
+            <td>${tmpVacation.start_date}</td>
+            <td>${tmpVacation.end_date}</td>
+            <td>${tmpVacation.state}</td>
+            <td><a href="${updateLink}">
+                <button type="button">Zmień urlop</button>
+            </a>
+                <a href="${deleteLink}"
+                   onclick="if(!(confirm('Czy na pewno chcesz usunąć ten Ośrodek?'))) return false">
+                    <button type="button">Usuń urlop</button>
+                </a></td>
         </tr>
-
 
     </c:forEach>
     </tbody>

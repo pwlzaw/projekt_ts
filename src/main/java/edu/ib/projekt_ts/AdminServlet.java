@@ -69,49 +69,49 @@ public class AdminServlet extends HttpServlet {
         }
     }
 
-        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws
-        ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws
+            ServletException, IOException {
 
 
-            try {
+        try {
 
-                // odczytanie zadania
-                String command = request.getParameter("command");
+            // odczytanie zadania
+            String command = request.getParameter("command");
 
-                if (command == null)
-                    command = "LIST";
+            if (command == null)
+                command = "LIST";
 
-                switch (command) {
+            switch (command) {
 
-                    case "LIST":
-                        listVacations(request, response);
-                        break;
-                        
-                    case "ACCEPT":
-                        acceptVacations(request, response);
-                        break;
+                case "LIST":
+                    listVacations(request, response);
+                    break;
 
-                    case "DENY":
-                        denyVacations(request, response);
-                        break;
+                case "ACCEPT":
+                    acceptVacations(request, response);
+                    break;
+
+                case "DENY":
+                    denyVacations(request, response);
+                    break;
 
 
-                    default:
-                        listVacations(request, response);
-                }
-
-            } catch (Exception e) {
-                throw new ServletException(e);
+                default:
+                    listVacations(request, response);
             }
 
+        } catch (Exception e) {
+            throw new ServletException(e);
         }
+
+    }
 
     private void denyVacations(HttpServletRequest request, HttpServletResponse response) throws Exception {
         int id = Integer.parseInt(request.getParameter("id"));
         int idEmployee = Integer.parseInt(request.getParameter("id_employee"));
         LocalDate start = LocalDate.parse(request.getParameter("start_date"));
         LocalDate end = LocalDate.parse(request.getParameter("end_date"));
-        LocalDate state = LocalDate.parse(request.getParameter("state"));
+        String state = request.getParameter("state");
 
         Vacation vacation = new Vacation(id,idEmployee, start, end, "denied");
 
@@ -128,7 +128,7 @@ public class AdminServlet extends HttpServlet {
         int idEmployee = Integer.parseInt(request.getParameter("id_employee"));
         LocalDate start = LocalDate.parse(request.getParameter("start_date"));
         LocalDate end = LocalDate.parse(request.getParameter("end_date"));
-        LocalDate state = LocalDate.parse(request.getParameter("state"));
+        String state = request.getParameter("state");
 
         if (state.equals("waiting deletion")) {
             dbUtil.deleteVacation(id);
@@ -174,7 +174,8 @@ public class AdminServlet extends HttpServlet {
         try {
 
             conn = DriverManager.getConnection(db_url, name, pass);
-            status = true;
+            if (dbUtil.hasPermision(name))
+                status = true;
 
         } catch (Exception e) {
             e.printStackTrace();
