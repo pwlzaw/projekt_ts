@@ -341,7 +341,7 @@ public class DBUtilUser extends DBUtil {
                         // pobranie danych z rzedu
                         LocalDate start_date = LocalDate.parse(resultSet.getString("start_date"));
                         LocalDate end_date = LocalDate.parse(resultSet.getString("end_date"));
-                        difference = (int)DAYS.between(start_date,end_date);
+                        difference = (int)DAYS.between(start_date,end_date)+1;
 
                     }
 
