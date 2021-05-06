@@ -181,7 +181,7 @@ public class DBUtilUser extends DBUtil{
                 int used = Integer.parseInt(resultSet.getString("used"));
                 int available = Integer.parseInt(resultSet.getString("available"));
 
-                result = "Użytkownik: " + name + "\t Liczba wykorzystanych dni wolnego: " + used + "\t Liczba dostępnych dni wolnego: : " + available;
+                result = "Użytkownik: " + name + "\t Liczba wykorzystanych dni wolnego: " + used + "\t Liczba dostępnych dni wolnego: " + available;
             }
 
         } finally {

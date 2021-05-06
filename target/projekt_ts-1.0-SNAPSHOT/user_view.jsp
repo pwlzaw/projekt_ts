@@ -3,7 +3,7 @@
          import="java.util.*" %>
 <html>
 <head>
-    <title>Oferta</title>
+    <title>Urlopy</title>
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/main.css">
@@ -11,7 +11,7 @@
 
 <body>
 
-<h1>Twoje wakacje</h1>
+<h1>Twoje urlopy</h1>
 
 <h2>
     ${USER_INFO}
@@ -62,7 +62,8 @@
 </table>
 id pracownika wynosi:${EmployeeID}
 <br>
-<a href="add_vacation.jsp?id_employee=${EmployeeID}">Dodaj urlop</a>
+<a href="add_vacation.jsp?id_employee=${EmployeeID}" class="btn btn-primary">Dodaj urlop</a>
+<br>
 <a href="index.html"  role="button">Wróć do strony głównej</a>
 
 </body>

@@ -3,7 +3,7 @@
          import="java.util.*" %>
 <html>
 <head>
-    <title>Oferta</title>
+    <title>Admin</title>
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/main.css">
@@ -12,7 +12,7 @@
 <body>
 
 
-<h1>Twoje wakacje</h1>
+<h1>Urlopy do rozpatrzenia</h1>
 
 
 <table class="table">

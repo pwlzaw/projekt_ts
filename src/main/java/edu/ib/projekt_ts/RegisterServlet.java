@@ -43,8 +43,8 @@ public class RegisterServlet extends HttpServlet {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            if(dbUtil.checkLogin(login)) {
-                if (password.equals(password2)) {
+            if(dbUtil.checkLogin(login) && login.length()>0) {
+                if (password.equals(password2) && password.length()>0) {
                     try {
                         dbUtil.register(login,password,name);
                         RequestDispatcher dispatcher = request.getRequestDispatcher("/index.html");
