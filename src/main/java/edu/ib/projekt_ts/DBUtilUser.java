@@ -1,7 +1,5 @@
 package edu.ib.projekt_ts;
 
-import jdk.vm.ci.meta.Local;
-
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -299,7 +297,7 @@ public class DBUtilUser extends DBUtil {
             int length = (int) DAYS.between(vacation.getStart_date(), vacation.getEnd_date())+1;
 
 
-            if ((vacation.getState().equals("waiting deletion") || (getUserAvailableDays(vacation.getId_employee()) >= length))&&length>0) {
+            if (((vacation.getState().equals("waiting deletion") || (getUserAvailableDays(vacation.getId_employee()) >= length))&&length>0)) {
 
 
 
@@ -318,9 +316,11 @@ public class DBUtilUser extends DBUtil {
                 if (!vacation.getState().equals("waiting deletion")) {
 
 
-                    String sql2 = "insert into vacations_to_update(id,id_employee,start_date,end_date,state) values (?,?,?,?,?)";
+                    String sql2 =
+                            "insert IGNORE into vacations_to_update(id,id_employee,start_date,end_date,state) values (?,?,?,?,?);";
 
                     statement2 = conn.prepareStatement(sql2);
+                    statement2.setString(1, String.valueOf(vacation.getId()));
                     statement2.setString(1, String.valueOf(vacation.getId()));
                     statement2.setString(2, String.valueOf(vacation.getId_employee()));
                     statement2.setString(3, String.valueOf((vacation.getStart_date())));
