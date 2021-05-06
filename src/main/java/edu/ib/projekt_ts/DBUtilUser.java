@@ -336,7 +336,7 @@ public class DBUtilUser extends DBUtil {
                     statement3.execute();
 
 
-                    resultSet = statement.executeQuery(sql);
+                    resultSet = statement.executeQuery(sql3);
 
                     // przetworzenie wyniku zapytania
                     while (resultSet.next()) {
