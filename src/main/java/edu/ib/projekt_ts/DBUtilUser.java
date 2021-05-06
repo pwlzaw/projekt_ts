@@ -291,7 +291,7 @@ public class DBUtilUser extends DBUtil {
         PreparedStatement statement2 = null;
 
         try {
-            int length = (int) DAYS.between(vacation.getStart_date(), vacation.getEnd_date());
+            int length = (int) DAYS.between(vacation.getStart_date(), vacation.getEnd_date())+1;
 
 
             if (vacation.getState().equals("waiting deletion") || (getUserAvailableDays(vacation.getId_employee()) > length)) {
@@ -334,7 +334,7 @@ public class DBUtilUser extends DBUtil {
 
     public void addVacation(Vacation vacation) throws Exception {
 
-        int length = (int) DAYS.between(vacation.getStart_date(), vacation.getEnd_date());
+        int length = (int) DAYS.between(vacation.getStart_date(), vacation.getEnd_date())+1;
 
 
         if (getUserAvailableDays(vacation.getId_employee()) > length) {
