@@ -291,7 +291,7 @@ public class DBUtilUser extends DBUtil {
         Connection conn = null;
         PreparedStatement statement = null;
         PreparedStatement statement2 = null;
-        PreparedStatement statement3 = null;
+        Statement statement3 = null;
         ResultSet resultSet = null;
         int difference= 0;
 
@@ -328,15 +328,13 @@ public class DBUtilUser extends DBUtil {
                     statement2.setString(5, "New Value");
                     statement2.execute();
 
+                    int inputId = vacation.getId();
 
-                    String sql3 = "select * from vacations where id=?";
+                    String sql3 = "SELECT * FROM vacations where id = " + inputId;
 
-                    statement3 = conn.prepareStatement(sql3);
-                    statement3.setString(1, String.valueOf(vacation.getId()));
-                    statement3.execute();
+                    statement3 = conn.createStatement();
 
-
-                    resultSet = statement.executeQuery(sql3);
+                    resultSet = statement3.executeQuery(sql3);
 
                     // przetworzenie wyniku zapytania
                     while (resultSet.next()) {
