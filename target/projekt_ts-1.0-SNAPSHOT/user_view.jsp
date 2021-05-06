@@ -60,9 +60,11 @@
     </c:forEach>
     </tbody>
 </table>
-id pracownika wynosi:${EmployeeID}
+
 <br>
+<p>
 <a href="add_vacation.jsp?id_employee=${EmployeeID}" class="btn btn-primary">Dodaj urlop</a>
+</p>
 <br>
 <a href="index.html"  role="button">Wróć do strony głównej</a>
 

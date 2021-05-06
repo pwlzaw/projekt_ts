@@ -68,7 +68,7 @@ public class DBUtilRegister extends DBUtil{
             String sql2 = "insert into employees (employee_name,used,available,login,passwd,user_type) values ('"
                     +name_employee+"',0,26,'"+login+"','"+password_employee+"','user')";
             String sql3 = "grant select,insert,update on vacations to '"+login+"'@'localhost'";
-            String sql4 = "grant select on employees to '"+login+"'@'localhost'";
+            String sql4 = "grant select, update on employees to '"+login+"'@'localhost'";
             String sql5 = "grant insert on vacations_to_update to '"+login+"'@'localhost'";
 
             statement = conn.prepareStatement(sql);

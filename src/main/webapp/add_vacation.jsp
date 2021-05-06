@@ -8,8 +8,8 @@
 
 </head>
 <body>
-Id użytkownika wynosi: <%=request.getParameter("id_employee")%>
-<h1>Wpisz dane nowego resortu</h1>
+
+<h1>Wpisz dane nowego urlopu</h1>
 <form action="UserServlet" method="get">
     <input type="hidden" name="command" value="ADD">
     <input type="hidden" name="id_employee" value="<%=request.getParameter("id_employee")%>">
