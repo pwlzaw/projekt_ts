@@ -167,19 +167,38 @@ public class DBUtilAdmin extends DBUtil{
         PreparedStatement statement2 = null;
 
         try {
-            // polaczenie z BD
-            conn = DriverManager.getConnection(URL, name, password);
+            if(vacation.getState().equals("denied")){
+                // polaczenie z BD
+                conn = DriverManager.getConnection(URL, name, password);
 
-            // zapytanie UPDATE
-            String sql = "UPDATE vacations SET state=?" +
-                    "WHERE id =?";
+                // zapytanie UPDATE
+                String sql = "UPDATE vacations SET state=?" +
+                        "WHERE id =?";
 
-            statement = conn.prepareStatement(sql);
-            statement.setString(1, vacation.getState());
-            statement.setString(2, String.valueOf(vacation.getId()));
+                statement = conn.prepareStatement(sql);
+                statement.setString(1, vacation.getState());
+                statement.setString(2, String.valueOf(vacation.getId()));
 
-            // wykonanie zapytania
-            statement.execute();
+                // wykonanie zapytania
+                statement.execute();
+
+            }else if (vacation.getState().equals("accepted")){
+                // polaczenie z BD
+                conn = DriverManager.getConnection(URL, name, password);
+
+                // zapytanie UPDATE
+                String sql = "UPDATE vacations SET state=?,start_date=?,end_date=? " +
+                        "WHERE id =?";
+
+                statement = conn.prepareStatement(sql);
+                statement.setString(1, vacation.getState());
+                statement.setString(2, vacation.getStart_date().toString());
+                statement.setString(3, vacation.getEnd_date().toString());
+                statement.setString(4, String.valueOf(vacation.getId()));
+
+                // wykonanie zapytania
+                statement.execute();
+            }
 
             String sql2 = "delete from vacations_to_update where id =?";
 

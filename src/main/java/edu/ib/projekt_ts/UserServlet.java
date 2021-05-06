@@ -28,9 +28,7 @@ public class UserServlet extends HttpServlet {
         super.init(config);
 
         try {
-
             dbUtil = new DBUtilUser(db_url);
-
         } catch (Exception e) {
             throw new ServletException(e);
         }
@@ -52,18 +50,26 @@ public class UserServlet extends HttpServlet {
         if (validate(name, password)) {
 
 
+            int id=0;
             RequestDispatcher dispatcher = request.getRequestDispatcher("/user_view.jsp");
-
             List<Vacation> vacationList = null;
 
             try {
-                int id = dbUtil.getID(name);
+                id = dbUtil.getID(name);
                 vacationList = dbUtil.getVacations(id);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             // dodanie listy do obiektu zadania
+            String user = null;
+            try {
+                user = dbUtil.getEmployee(dbUtil.getID(name));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            request.setAttribute("USER_INFO", user);
+            request.setAttribute("EmployeeID", id);
             request.setAttribute("VACATION_LIST", vacationList);
 
             dispatcher.forward(request, response);
@@ -176,6 +182,8 @@ public class UserServlet extends HttpServlet {
         List<Vacation> resortList = dbUtil.getVacations(idEmployee);
 
         // dodanie listy do obiektu zadania
+
+        request.setAttribute("EmployeeID", idEmployee);
         request.setAttribute("USER_INFO", user);
         request.setAttribute("VACATION_LIST", resortList);
 

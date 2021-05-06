@@ -107,6 +107,7 @@ public class AdminServlet extends HttpServlet {
     }
 
     private void denyVacations(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         int id = Integer.parseInt(request.getParameter("id"));
         int idEmployee = Integer.parseInt(request.getParameter("id_employee"));
         LocalDate start = LocalDate.parse(request.getParameter("start_date"));
@@ -129,6 +130,7 @@ public class AdminServlet extends HttpServlet {
         LocalDate start = LocalDate.parse(request.getParameter("start_date"));
         LocalDate end = LocalDate.parse(request.getParameter("end_date"));
         String state = request.getParameter("state");
+
 
         if (state.equals("waiting deletion")) {
             dbUtil.deleteVacation(id);

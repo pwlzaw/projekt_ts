@@ -17,7 +17,7 @@
     ${USER_INFO}
 </h2>
 
-<table>
+<table class="table">
 
     <thead>
     <tr>
@@ -60,10 +60,10 @@
     </c:forEach>
     </tbody>
 </table>
-id pracownika wynosi:${VACATION_LIST[0].id_employee}
+id pracownika wynosi:${EmployeeID}
 <br>
-<a href="add_vacation.jsp?id_employee=${VACATION_LIST[0].id_employee}">Dodaj urlop</a>
-
+<a href="add_vacation.jsp?id_employee=${EmployeeID}">Dodaj urlop</a>
+<a href="index.html"  role="button">Wróć do strony głównej</a>
 
 </body>
 </html>
